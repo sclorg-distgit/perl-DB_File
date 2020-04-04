@@ -9,7 +9,7 @@
 
 Name:           %{?scl_prefix}perl-DB_File
 Version:        1.852
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Perl5 access to Berkeley DB version 1.x
 License:        GPL+ or Artistic
 URL:            https://metacpan.org/release/DB_File
@@ -62,7 +62,7 @@ interface defined here mirrors the Berkeley DB interface closely.
 %prep
 %setup -q -n DB_File-%{version}
 find -type f -exec chmod -x {} +
-perl -MConfig -pi -e 's|^#!.*perl|$Config{startperl}|' dbinfo
+%{?scl:scl enable %{scl} '}perl -MConfig -pi -e %{?scl:'"}'%{?scl:"'}s|^#!.*perl|$Config{startperl}|%{?scl:'"}'%{?scl:"'} dbinfo%{?scl:'}
 
 %build
 %{?scl:scl enable %{scl} '}perl Makefile.PL INSTALLDIRS=vendor NO_PACKLIST=1 NO_PERLLOCAL=1 OPTIMIZE="$RPM_OPT_FLAGS" && %{make_build}%{?scl:'}
@@ -82,6 +82,9 @@ find $RPM_BUILD_ROOT -type f -name '*.bs' -size 0 -delete
 %{_mandir}/man3/*
 
 %changelog
+* Wed Mar 25 2020 Petr Pisar <ppisar@redhat.com> - 1.852-7
+- Fix shebang normalization (bug #1817118)
+
 * Tue Jan 07 2020 Jitka Plesnikova <jplesnik@redhat.com> - 1.852-6
 - Re-rebuild of bootstrapped packages
 
